@@ -1,0 +1,86 @@
+{
+  "$comment": "Azure AI Search index schema for the policy-navigator claim cards. This file is the single source of truth for the index definition — /scripts/azure_search_index.py loads it directly to create/update the index, rather than re-declaring fields inline. One document == one claim card (claims/claim-####.md).",
+  "name": "policynav-claims-index",
+  "fields": [
+    { "name": "id", "type": "Edm.String", "key": true, "filterable": true, "sortable": true, "searchable": false, "retrievable": true },
+    { "name": "claim_id", "type": "Edm.String", "filterable": true, "sortable": true, "searchable": false, "retrievable": true },
+    { "name": "claim_text", "type": "Edm.String", "searchable": true, "filterable": false, "sortable": false, "retrievable": true, "analyzer": "en.microsoft" },
+    { "name": "claim_type", "type": "Edm.String", "filterable": true, "facetable": true, "searchable": false, "retrievable": true },
+    { "name": "scope_spatial", "type": "Edm.String", "filterable": true, "facetable": true, "searchable": false, "retrievable": true },
+    { "name": "scope_sectoral", "type": "Edm.String", "filterable": true, "facetable": true, "searchable": false, "retrievable": true },
+    { "name": "evidence_strength", "type": "Edm.String", "filterable": true, "facetable": true, "sortable": true, "searchable": false, "retrievable": true },
+    { "name": "context_tags", "type": "Collection(Edm.String)", "filterable": true, "facetable": true, "searchable": true, "retrievable": true },
+    { "name": "mechanism_tags", "type": "Collection(Edm.String)", "filterable": true, "facetable": true, "searchable": true, "retrievable": true },
+    { "name": "outcome_tags", "type": "Collection(Edm.String)", "filterable": true, "facetable": true, "searchable": true, "retrievable": true },
+    { "name": "policy_lever_tags", "type": "Collection(Edm.String)", "filterable": true, "facetable": true, "searchable": true, "retrievable": true },
+    { "name": "qualifiers", "type": "Collection(Edm.String)", "searchable": true, "filterable": false, "retrievable": true, "analyzer": "en.microsoft" },
+    { "name": "supporting_excerpt", "type": "Edm.String", "searchable": true, "filterable": false, "retrievable": true, "analyzer": "en.microsoft" },
+    { "name": "sources", "type": "Collection(Edm.String)", "filterable": true, "facetable": true, "searchable": false, "retrievable": true },
+    { "name": "source_titles", "type": "Collection(Edm.String)", "searchable": true, "filterable": false, "retrievable": true },
+    { "name": "relationships_supports", "type": "Collection(Edm.String)", "filterable": true, "searchable": false, "retrievable": true },
+    { "name": "relationships_qualifies", "type": "Collection(Edm.String)", "filterable": true, "searchable": false, "retrievable": true },
+    { "name": "relationships_contradicts", "type": "Collection(Edm.String)", "filterable": true, "searchable": false, "retrievable": true },
+    { "name": "relationships_depends_on", "type": "Collection(Edm.String)", "filterable": true, "searchable": false, "retrievable": true },
+    { "name": "is_restricted_source", "type": "Edm.Boolean", "filterable": true, "facetable": true, "searchable": false, "retrievable": true },
+    { "name": "created", "type": "Edm.DateTimeOffset", "filterable": true, "sortable": true, "searchable": false, "retrievable": true },
+    { "name": "last_reviewed", "type": "Edm.DateTimeOffset", "filterable": true, "sortable": true, "searchable": false, "retrievable": true },
+    { "name": "claim_url", "type": "Edm.String", "filterable": false, "searchable": false, "retrievable": true },
+    {
+      "name": "content_vector",
+      "type": "Collection(Edm.Single)",
+      "searchable": true,
+      "filterable": false,
+      "retrievable": false,
+      "dimensions": 3072,
+      "vectorSearchProfile": "policynav-vector-profile"
+    }
+  ],
+  "vectorSearch": {
+    "algorithms": [
+      {
+        "name": "policynav-hnsw",
+        "kind": "hnsw",
+        "hnswParameters": { "m": 4, "efConstruction": 400, "efSearch": 500, "metric": "cosine" }
+      }
+    ],
+    "profiles": [
+      {
+        "name": "policynav-vector-profile",
+        "algorithm": "policynav-hnsw",
+        "vectorizer": null
+      }
+    ]
+  },
+  "semantic": {
+    "defaultConfiguration": "policynav-semantic-config",
+    "configurations": [
+      {
+        "name": "policynav-semantic-config",
+        "prioritizedFields": {
+          "titleField": { "fieldName": "claim_id" },
+          "prioritizedContentFields": [
+            { "fieldName": "claim_text" },
+            { "fieldName": "supporting_excerpt" },
+            { "fieldName": "qualifiers" }
+          ],
+          "prioritizedKeywordsFields": [
+            { "fieldName": "mechanism_tags" },
+            { "fieldName": "outcome_tags" },
+            { "fieldName": "policy_lever_tags" },
+            { "fieldName": "context_tags" }
+          ]
+        }
+      }
+    ]
+  },
+  "embedding_model": {
+    "note": "content_vector is generated by embedding the concatenation of claim_text + qualifiers + supporting_excerpt using this deployment.",
+    "provider": "azure_openai",
+    "deployment_name": "text-embedding-3-large",
+    "dimensions": 3072
+  },
+  "restricted_sources": {
+    "note": "A claim has is_restricted_source=true if every entry in its resolved sources resolves only to one of these source IDs. Claims are still indexed (not dropped) so retrieval doesn't silently lose evidence, but the flag must be honoured by any downstream grounding config (Phase 2) that should not surface IN-CONFIDENCE/internal content to broad audiences.",
+    "source_ids": ["source-0024", "source-0045"]
+  }
+}

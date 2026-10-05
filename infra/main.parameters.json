@@ -1,0 +1,15 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": { "value": "australiaeast" },
+    "resourceGroupName": { "value": "rg-policy-navigator" },
+    "namePrefix": { "value": "policynav" },
+    "searchSku": { "value": "basic" },
+    "semanticSearchTier": { "value": "standard" },
+    "embeddingModelName": { "value": "text-embedding-3-large" },
+    "embeddingModelVersion": { "value": "" },
+    "embeddingCapacity": { "value": 30 },
+    "indexerPrincipalId": { "value": "" }
+  }
+}

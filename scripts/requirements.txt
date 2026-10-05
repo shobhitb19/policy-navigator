@@ -1,0 +1,5 @@
+azure-search-documents>=11.5.1
+azure-identity>=1.17.0
+openai>=1.35.0
+pyyaml>=6.0
+requests>=2.32.0

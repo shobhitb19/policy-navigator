@@ -1,0 +1,73 @@
+name: Index claims into Azure AI Search
+
+# Keeps the Azure AI Search index (RAG retrieval layer for Phase 2+) in sync with the
+# authoring content in claims/ and sources/. See docs/AZURE_RAG_SETUP.md for full context,
+# including the one-time Azure AD app registration / federated credential setup this workflow
+# depends on.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "claims/**"
+      - "sources/**"
+      - "infra/search-index-schema.json"
+      - "scripts/azure_search_index.py"
+      - "scripts/requirements.txt"
+  workflow_dispatch:
+    inputs:
+      full_reindex:
+        description: "Reindex every claim instead of only changed ones"
+        type: boolean
+        default: false
+
+permissions:
+  id-token: write # required for OIDC federated login to Azure
+  contents: read
+
+concurrency:
+  group: index-claims
+  cancel-in-progress: false
+
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    environment: azure-search-rag
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history needed for `git diff` in incremental mode
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r scripts/requirements.txt
+
+      - name: Azure login (OIDC, no stored secrets)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Run indexer (full)
+        if: github.event_name == 'workflow_dispatch' && inputs.full_reindex
+        env:
+          SEARCH_ENDPOINT: ${{ vars.SEARCH_ENDPOINT }}
+          AZURE_OPENAI_ENDPOINT: ${{ vars.AZURE_OPENAI_ENDPOINT }}
+          AZURE_OPENAI_EMBEDDING_DEPLOYMENT: ${{ vars.AZURE_OPENAI_EMBEDDING_DEPLOYMENT }}
+          SEARCH_INDEX_NAME: ${{ vars.SEARCH_INDEX_NAME }}
+        run: python scripts/azure_search_index.py --full
+
+      - name: Run indexer (incremental)
+        if: "!(github.event_name == 'workflow_dispatch' && inputs.full_reindex)"
+        env:
+          SEARCH_ENDPOINT: ${{ vars.SEARCH_ENDPOINT }}
+          AZURE_OPENAI_ENDPOINT: ${{ vars.AZURE_OPENAI_ENDPOINT }}
+          AZURE_OPENAI_EMBEDDING_DEPLOYMENT: ${{ vars.AZURE_OPENAI_EMBEDDING_DEPLOYMENT }}
+          SEARCH_INDEX_NAME: ${{ vars.SEARCH_INDEX_NAME }}
+        run: python scripts/azure_search_index.py --since "${{ github.event.before }}"
