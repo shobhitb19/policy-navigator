@@ -1,0 +1,19 @@
+.DS_Store
+*.swp
+*.swo
+*~
+.env
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+_wiki/
+_site/
+plain/
+
+# Restricted source documents — purged from history 2026-08-20 and must not be re-added.
+# (The MartinJenkins report was released publicly and has been restored — 2026-08-20.)
+# These are in-confidence / internal and cannot be republished. The source cards
+# (sources/source-0024, -0045, -0046) carry the citations and paraphrased findings.
+sources/Auckland Story 2017 - The Treasury - 26 July 2017.pdf
+sources/Population shifts in NZ.pptx

@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "timeout": 30,
+            "statusMessage": "Syncing writing branch...",
+            "command": "cd /home/user/llm-place-based-policy && git fetch origin writing 2>/dev/null || { echo '{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"No writing branch found on remote — nothing to merge.\"}}'; exit 0; }; WRITING=$(git rev-parse origin/writing 2>/dev/null); MAIN=$(git rev-parse HEAD 2>/dev/null); BASE=$(git merge-base HEAD origin/writing 2>/dev/null); if [ \"$BASE\" = \"$WRITING\" ]; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"writing branch has no new commits — nothing to merge.\"}}'; exit 0; fi; if [ \"$BASE\" = \"$MAIN\" ]; then git merge origin/writing --ff-only -m 'Auto-merge writing branch' 2>/dev/null && echo '{\"hookSpecificOutput\":{\"hookEventName\":\"SessionStart\",\"additionalContext\":\"writing branch fast-forwarded into main cleanly.\"}}' && exit 0; fi; if git merge origin/writing --no-ff -m 'Auto-merge writing branch at session start' 2>/dev/null; then FILES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null | head -20 | paste -sd ', '); echo \"{\\\"hookSpecificOutput\\\":{\\\"hookEventName\\\":\\\"SessionStart\\\",\\\"additionalContext\\\":\\\"writing branch merged into main. Changed files: $FILES\\\"}}\"; else CONFLICTS=$(git diff --name-only --diff-filter=U 2>/dev/null | head -10 | paste -sd ', '); git merge --abort 2>/dev/null; echo \"{\\\"hookSpecificOutput\\\":{\\\"hookEventName\\\":\\\"SessionStart\\\",\\\"additionalContext\\\":\\\"CONFLICT: writing branch could not be auto-merged into main. Conflicting files: $CONFLICTS. Run: git fetch origin writing && git merge origin/writing to inspect and resolve manually.\\\"}}\"; fi"
+          }
+        ]
+      }
+    ]
+  }
+}

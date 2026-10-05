@@ -1,0 +1,62 @@
+# Place-Based Policy Wiki
+
+> A RAG-first knowledge base on urban economics and city policy. 112 atomic claim cards from peer-reviewed literature with YAML metadata for tag-based filtering and relationship traversal. All URLs below return plain HTML with no JavaScript — fetch them directly.
+
+## How to retrieve selectively
+
+1. Read the LLM index page to see all 112 claims summarised in one page.
+2. Read a synthesis hub for a thematic overview and curated claim list.
+3. Fetch individual claim pages by ID — each is self-contained with evidence, qualifiers, and YAML metadata.
+4. Follow `supports`/`qualifies`/`contradicts`/`depends_on` IDs in each claim's YAML block to traverse the evidence graph.
+5. Fetch source pages for full bibliographic detail.
+
+## Entry point
+
+- [LLM index — all 112 claims summarised](https://richardfwalley.github.io/llm-place-based-policy/llm-index/): Start here — rendered HTML, full claim summaries grouped by source, links to every page
+
+## Plain HTML files (no JavaScript, fetch directly)
+
+- [Plain HTML index](https://richardfwalley.github.io/llm-place-based-policy/plain/index.html): Full list of all plain HTML files
+
+### Synthesis hubs
+
+- [01 Urbanisation and Spatial Systems](https://richardfwalley.github.io/llm-place-based-policy/plain/synthesis/01-urbanisation-and-spatial-systems.html)
+- [02 Agglomeration and Productivity](https://richardfwalley.github.io/llm-place-based-policy/plain/synthesis/02-agglomeration-and-productivity.html)
+- [03 Governance and Institutions](https://richardfwalley.github.io/llm-place-based-policy/plain/synthesis/03-governance-and-institutions.html)
+- [04 Land Markets, Zoning, Urban Form](https://richardfwalley.github.io/llm-place-based-policy/plain/synthesis/04-land-markets-zoning-urban-form.html)
+- [05 Transport and Accessibility](https://richardfwalley.github.io/llm-place-based-policy/plain/synthesis/05-transport-and-accessibility.html)
+- [06 Inclusion and Division](https://richardfwalley.github.io/llm-place-based-policy/plain/synthesis/06-inclusion-and-division.html)
+- [07 Resilience, Environment, Sustainability](https://richardfwalley.github.io/llm-place-based-policy/plain/synthesis/07-resilience-environment-sustainability.html)
+- [08 Methods and Tools](https://richardfwalley.github.io/llm-place-based-policy/plain/synthesis/08-methods-and-tools.html)
+- [09 Demographics and Population Strategy](https://richardfwalley.github.io/llm-place-based-policy/plain/synthesis/09-demographics-and-population-strategy.html)
+
+### Claims (individual — fetch by ID)
+
+- [claim-0001](https://richardfwalley.github.io/llm-place-based-policy/plain/claims/claim-0001.html): Doubling city size → 2.7–6.4% wage/productivity gain (median 4.6%)
+- [claim-0011](https://richardfwalley.github.io/llm-place-based-policy/plain/claims/claim-0011.html) through [claim-0112](https://richardfwalley.github.io/llm-place-based-policy/plain/claims/claim-0112.html): see plain HTML index for full list
+- [Claims index](https://richardfwalley.github.io/llm-place-based-policy/plain/claims/index.html): All claims grouped by source
+
+### Policy levers
+
+- [Housing Supply Reform](https://richardfwalley.github.io/llm-place-based-policy/plain/levers/housing-supply-reform.html)
+- [Transport Investment](https://richardfwalley.github.io/llm-place-based-policy/plain/levers/transport-investment.html)
+- [Metropolitan Governance](https://richardfwalley.github.io/llm-place-based-policy/plain/levers/metropolitan-governance.html)
+- [Land Use Planning](https://richardfwalley.github.io/llm-place-based-policy/plain/levers/land-use-planning.html)
+- [Zoning and FAR](https://richardfwalley.github.io/llm-place-based-policy/plain/levers/zoning-and-far.html)
+- [Infrastructure Provision](https://richardfwalley.github.io/llm-place-based-policy/plain/levers/infrastructure-provision.html)
+- [Investment and FDI](https://richardfwalley.github.io/llm-place-based-policy/plain/levers/investment-and-fdi.html)
+- [Innovation and Diffusion](https://richardfwalley.github.io/llm-place-based-policy/plain/levers/innovation-and-diffusion.html)
+- [Integrated Spatial Planning](https://richardfwalley.github.io/llm-place-based-policy/plain/levers/integrated-spatial-planning.html)
+
+### Place-specific views
+
+- [Auckland](https://richardfwalley.github.io/llm-place-based-policy/plain/places/auckland.html)
+
+### Ontology (controlled vocabulary)
+
+- [Mechanism tags](https://richardfwalley.github.io/llm-place-based-policy/plain/ontology/mechanism_tags.html)
+- [Outcome tags](https://richardfwalley.github.io/llm-place-based-policy/plain/ontology/outcome_tags.html)
+- [Context tags](https://richardfwalley.github.io/llm-place-based-policy/plain/ontology/context_tags.html)
+- [Policy lever tags](https://richardfwalley.github.io/llm-place-based-policy/plain/ontology/policy_lever_tags.html)
+- [Claim types](https://richardfwalley.github.io/llm-place-based-policy/plain/ontology/claim_types.html)
+- [Relationship types](https://richardfwalley.github.io/llm-place-based-policy/plain/ontology/relationship_types.html)

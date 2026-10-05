@@ -1,0 +1,12 @@
+[build]
+  command = "pip install markdown && python3 build_plain.py"
+  publish = "plain"
+
+[build.environment]
+  PYTHON_VERSION = "3.12"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    X-Robots-Tag = "all"
